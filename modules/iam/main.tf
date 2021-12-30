@@ -1,6 +1,4 @@
-resource "aws_iam_role" "this" {
-#   name = "ec2-read"
-  
+resource "aws_iam_role" "this" {  
   assume_role_policy = "${file("${path.module}/role.json")}"
   tags = merge(
     var.addl_tags,  

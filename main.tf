@@ -18,14 +18,6 @@ module "vpc" {
   addl_tags = local.addl_tags
 }
 
-# module "vm" {
-#   source = "./modules/vm"
-#   vpc_id = module.vpc.id
-#   subnet_ids = module.vpc.subnet_ids
-
-#   addl_tags = local.addl_tags
-# }
-
 module "iam" {
   source = "./modules/iam"
   addl_tags = local.addl_tags
@@ -39,8 +31,6 @@ module "asg" {
   subnet_ids = module.vpc.subnet_ids
   addl_tags = local.addl_tags
 }
-
-
 
 output "subnets" {
   value = module.vpc.subnet_ids
