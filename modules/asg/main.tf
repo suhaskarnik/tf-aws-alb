@@ -129,12 +129,6 @@ resource "aws_autoscaling_group" "this" {
 
 # ========================
 
-
-# resource "aws_autoscaling_attachment" "this" {
-#   autoscaling_group_name = module.asg.id
-#   alb_target_group_arn = aws_lb_target_group.this.id
-# }
-
 resource "aws_lb_listener" "this" {
   load_balancer_arn = aws_lb.this.arn
   port = "80"

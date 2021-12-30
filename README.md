@@ -27,5 +27,5 @@ The following resources will be set up by each of the modules
 
 ### IAM
 - A policy that authorises usage of AWS API to consume EC2 metadata
-- A role that authorises the EC2 instances to assume the above policy
+- A role containing the above policy. This role is assigned to the ASG IAM Instance Profile
 
