@@ -1,9 +1,10 @@
 resource "aws_iam_role" "this" {  
+  name = "alb-role"
   assume_role_policy = "${file("${path.module}/role.json")}"
   tags = merge(
     var.addl_tags,  
     {
-      Name = "ec2-allow-assumption"
+      Name = "alb-role"
   })
 }
 
