@@ -10,52 +10,26 @@ resource "aws_key_pair" "this" {
     var.addl_tags,{})
 }
 
-resource "aws_security_group" "this" {
-  vpc_id = var.vpc
-  ingress {
-    protocol = "tcp"
-    description = "Allow inbound HTTP"
-    from_port = 80
-    to_port = 80
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
-  ingress {
-    protocol = "tcp"
-    description = "Allow inbound SSH"
-    from_port = 22
-    to_port = 22
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    protocol = "tcp"
-    description = "Allow outbound HTTP"
-    from_port = 80
-    to_port = 80
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    protocol = "tcp"
-    description = "Allow inbound HTTPS"
-    from_port = 443
-    to_port = 443
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    protocol = "tcp"
-    description = "Allow outbound HTTPS"
-    from_port = 443
-    to_port = 443
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
+# Security Group for the ALB
+resource "aws_security_group" "alb" {
+  vpc_id = var.vpc    
+  description = "SG for ALB, allows ingress from the internet"
   tags = merge(
     var.addl_tags,  
     {
-      Name = "public-sg"
+      Name = "alb-sg"
+  })
+}
+
+# Security Group for the ASG
+resource "aws_security_group" "asg" {
+  vpc_id = var.vpc
+  description = "SG for ASG, allows ingress from the ALBs SG and SSH"
+  tags = merge(
+    var.addl_tags,  
+    {
+      Name = "scaling-group-sg"
   })
 }
 
@@ -69,8 +43,7 @@ resource "aws_launch_template" "this" {
   }
 
   network_interfaces {
-    associate_public_ip_address = true
-    security_groups = [aws_security_group.this.id]
+    security_groups = [aws_security_group.asg.id]
   }
   
   user_data = "${base64encode(file("${path.module}/user-data.sh"))}"
@@ -87,7 +60,7 @@ resource "aws_lb" "this" {
   name = "webserver-lb"
   internal = false
   load_balancer_type = "application"
-  security_groups = [aws_security_group.this.id]
+  security_groups = [aws_security_group.alb.id]
   subnets = var.subnet_ids
 
   tags = var.addl_tags
@@ -108,8 +81,6 @@ resource "aws_autoscaling_group" "this" {
   health_check_type = "ELB"
   desired_capacity = 3
   name_prefix = "webserver-"
-  
-  # availability_zones = var.azs
   
   vpc_zone_identifier = var.subnet_ids
   launch_template {
