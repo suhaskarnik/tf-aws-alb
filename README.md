@@ -1,6 +1,8 @@
 # Create AWS ALB Using Terraform
 
-This repo will use Terraform to create an ALB in AWS. It will install an Apache webserver.
+This repo will use Terraform to setup Apache webservers in an ASG behind the ALB. The intent of this exercise is to demonstrate the use of Terraform to setup an entire application including the networking and IAM bits. The diagram below shows what will be set up.
+
+![Architecture Diagram](./images/Terraform%20ASG.png)
 
 ---
 ## Prerequisites

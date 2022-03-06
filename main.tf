@@ -27,11 +27,10 @@ module "asg" {
   source = "./modules/asg"
   iam_instance_profile_name = module.iam.iam_instance_profile.name
   vpc = module.vpc.id
-  # azs = local.azs
   subnet_ids = module.vpc.subnet_ids
   addl_tags = local.addl_tags
 }
 
-output "subnets" {
-  value = module.vpc.subnet_ids
+output "lb_url" {
+  value = "http://${module.asg.dns_name}"
 }

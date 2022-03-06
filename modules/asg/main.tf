@@ -75,11 +75,11 @@ resource "aws_lb_target_group" "this" {
 }
 
 resource "aws_autoscaling_group" "this" {
-  max_size = 5
+  max_size = 3
   min_size = 1
   health_check_grace_period = 300
   health_check_type = "ELB"
-  desired_capacity = 3
+  desired_capacity = 2
   name_prefix = "webserver-"
   
   vpc_zone_identifier = var.subnet_ids
