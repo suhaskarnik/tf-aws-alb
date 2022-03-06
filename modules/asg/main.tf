@@ -98,8 +98,6 @@ resource "aws_autoscaling_group" "this" {
   ]
 }
 
-# ========================
-
 resource "aws_lb_listener" "this" {
   load_balancer_arn = aws_lb.this.arn
   port = "80"
